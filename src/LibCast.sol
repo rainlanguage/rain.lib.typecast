@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CAL
-pragma solidity ^0.8.15;
+pragma solidity ^0.8.18;
 
 /// @title LibCast
 /// @notice Additional type casting logic that the Solidity compiler doesn't
@@ -34,6 +34,12 @@ library LibCast {
     function asBytes32Array(uint256[] memory us_) internal pure returns (bytes32[] memory b32s_) {
         assembly ("memory-safe") {
             b32s_ := us_
+        }
+    }
+
+    function asUint256Array(bytes32[] memory b32s_) internal pure returns (uint256[] memory us_) {
+        assembly ("memory-safe") {
+            us_ := b32s_
         }
     }
 }
