@@ -16,11 +16,15 @@ library LibCast {
     /// Retype an array of `uint256[]` to `address[]`.
     /// @param us_ The array of integers to cast to addresses.
     /// @return addresses_ The array of addresses cast from each integer.
-    function asAddressesArray(
-        uint256[] memory us_
-    ) internal pure returns (address[] memory addresses_) {
+    function asAddressesArray(uint256[] memory us_) internal pure returns (address[] memory addresses_) {
         assembly ("memory-safe") {
             addresses_ := us_
+        }
+    }
+
+    function asUint256Array(address[] memory addresses_) internal pure returns (uint256[] memory us_) {
+        assembly ("memory-safe") {
+            us_ := addresses_
         }
     }
 
