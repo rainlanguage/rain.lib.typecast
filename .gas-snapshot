@@ -1,0 +1,4 @@
+LibCastTest:testAddressesArrayRound0(uint256[]) (runs: 1024, μ: 33520, ~: 33886)
+LibCastTest:testAddressesArrayRound1(address[]) (runs: 1024, μ: 38127, ~: 37306)
+LibCastTest:testBytes32ArrayRound0(uint256[]) (runs: 1024, μ: 33498, ~: 33864)
+LibCastTest:testBytes32ArrayRound1(bytes32[]) (runs: 1024, μ: 44173, ~: 43846)
