@@ -11,8 +11,14 @@ library LibConvert {
     /// Convert an array of integers to `bytes` data. This requires modifying
     /// the length in situ as the integer array length is measured in 32 byte
     /// increments while the length of `bytes` is the literal number of bytes.
+    ///
+    /// It is unsafe for the caller to use `us_` after it has been converted to
+    /// bytes because there is now two pointers to the same mutable data
+    /// structure AND the length prefix for the `uint256[]` version is corrupt.
+    ///
+    /// @param us_ The integer array to convert to `bytes`.
     /// @return bytes_ The integer array converted to `bytes` data.
-    function toBytes(uint256[] memory us_) internal pure returns (bytes memory bytes_) {
+    function unsafeToBytes(uint256[] memory us_) internal pure returns (bytes memory bytes_) {
         assembly ("memory-safe") {
             bytes_ := us_
             // Length in bytes is 32x the length in uint256
@@ -43,7 +49,7 @@ library LibConvert {
                     bytesCursor_ := add(bytesCursor_, 0x02)
                 } {
                     let data_ := mload(bytesCursor_)
-                    mstore(bytesCursor_, or(and(preserveMask_, data_), mload(cursor_)))
+                    mstore(bytesCursor_, or(and(preserveMask_, data_), and(replaceMask_, mload(cursor_))))
                 }
             }
             return bytes_;
