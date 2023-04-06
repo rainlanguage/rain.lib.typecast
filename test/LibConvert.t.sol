@@ -23,10 +23,4 @@ contract LibConvertTest is Test {
             LibConvert.unsafeTo16BitBytes(us_)
         );
     }
-
-    function testDebug() public {
-        uint256[] memory us_ = new uint256[](1);
-        us_[0] = 196608;
-        LibConvert.unsafeTo16BitBytes(us_);
-    }
 }
