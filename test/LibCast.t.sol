@@ -1,27 +1,28 @@
-// SPDX-License-Identifier: CAL
-pragma solidity ^0.8.18;
+// SPDX-License-Identifier: LicenseRef-DCL-1.0
+// SPDX-FileCopyrightText: Copyright (c) 2020 thedavidmeister
+pragma solidity =0.8.25;
 
-import "forge-std/Test.sol";
-import "../src/LibCast.sol";
+import {Test} from "forge-std/Test.sol";
+import {LibCast} from "../src/LibCast.sol";
 
 contract LibCastTest is Test {
-    function testAddressesArrayRound0(uint256[] memory us_) public {
-        assertEq(us_, LibCast.asUint256Array(LibCast.asAddressesArray(us_)));
+    function testAddressesArrayRound0(uint256[] memory us) public pure {
+        assertEq(us, LibCast.asUint256Array(LibCast.asAddressesArray(us)));
     }
 
-    function testAddressesArrayRound1(address[] memory addresses_) public {
-        assertEq(addresses_, LibCast.asAddressesArray(LibCast.asUint256Array(addresses_)));
+    function testAddressesArrayRound1(address[] memory addresses) public pure {
+        assertEq(addresses, LibCast.asAddressesArray(LibCast.asUint256Array(addresses)));
     }
 
-    function testBytes32ArrayRound0(uint256[] memory us_) public {
-        assertEq(us_, LibCast.asUint256Array(LibCast.asBytes32Array(us_)));
+    function testBytes32ArrayRound0(uint256[] memory us) public pure {
+        assertEq(us, LibCast.asUint256Array(LibCast.asBytes32Array(us)));
     }
 
-    function testBytes32ArrayRound1(bytes32[] memory b32s_) public {
-        bytes32[] memory round_ = LibCast.asBytes32Array(LibCast.asUint256Array(b32s_));
+    function testBytes32ArrayRound1(bytes32[] memory b32s) public pure {
+        bytes32[] memory round_ = LibCast.asBytes32Array(LibCast.asUint256Array(b32s));
 
-        for (uint256 i_ = 0; i_ < b32s_.length; i_++) {
-            assertEq(b32s_[i_], round_[i_]);
+        for (uint256 i = 0; i < b32s.length; i++) {
+            assertEq(b32s[i], round_[i]);
         }
     }
 }

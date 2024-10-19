@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: CAL
+// SPDX-License-Identifier: LicenseRef-DCL-1.0
+// SPDX-FileCopyrightText: Copyright (c) 2020 thedavidmeister
 pragma solidity ^0.8.18;
 
 /// @title LibCast
@@ -14,32 +15,32 @@ pragma solidity ^0.8.18;
 /// done with near zero or minimal overhead.
 library LibCast {
     /// Retype an array of `uint256[]` to `address[]`.
-    /// @param us_ The array of integers to cast to addresses.
-    /// @return addresses_ The array of addresses cast from each integer.
-    function asAddressesArray(uint256[] memory us_) internal pure returns (address[] memory addresses_) {
+    /// @param us The array of integers to cast to addresses.
+    /// @return addresses The array of addresses cast from each integer.
+    function asAddressesArray(uint256[] memory us) internal pure returns (address[] memory addresses) {
         assembly ("memory-safe") {
-            addresses_ := us_
+            addresses := us
         }
     }
 
-    function asUint256Array(address[] memory addresses_) internal pure returns (uint256[] memory us_) {
+    function asUint256Array(address[] memory addresses) internal pure returns (uint256[] memory us) {
         assembly ("memory-safe") {
-            us_ := addresses_
+            us := addresses
         }
     }
 
     /// Retype an array of `uint256[]` to `bytes32[]`.
-    /// @param us_ The array of integers to cast to 32 byte words.
-    /// @return b32s_ The array of 32 byte words.
-    function asBytes32Array(uint256[] memory us_) internal pure returns (bytes32[] memory b32s_) {
+    /// @param us The array of integers to cast to 32 byte words.
+    /// @return b32s The array of 32 byte words.
+    function asBytes32Array(uint256[] memory us) internal pure returns (bytes32[] memory b32s) {
         assembly ("memory-safe") {
-            b32s_ := us_
+            b32s := us
         }
     }
 
-    function asUint256Array(bytes32[] memory b32s_) internal pure returns (uint256[] memory us_) {
+    function asUint256Array(bytes32[] memory b32s) internal pure returns (uint256[] memory us) {
         assembly ("memory-safe") {
-            us_ := b32s_
+            us := b32s
         }
     }
 }
