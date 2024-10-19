@@ -1,26 +1,27 @@
-// SPDX-License-Identifier: CAL
-pragma solidity ^0.8.18;
+// SPDX-License-Identifier: LicenseRef-DCL-1.0
+// SPDX-FileCopyrightText: Copyright (c) 2020 thedavidmeister
+pragma solidity =0.8.25;
 
-import "forge-std/Test.sol";
-import "../src/LibConvert.sol";
-import "./LibConvertSlow.sol";
+import {Test} from "forge-std/Test.sol";
+import {LibConvert} from "../src/LibConvert.sol";
+import {LibConvertSlow} from "./LibConvertSlow.sol";
 
 contract LibConvertTest is Test {
-    function testUnsafeToBytesReferenceImplementation(uint256[] memory us_) public {
+    function testUnsafeToBytesReferenceImplementation(uint256[] memory us) public pure {
         assertEq(
             // Note the order of these calls is important because the unsafe call
-            // is unsafe, i.e. the `us_` can no longer be used.
-            LibConvertSlow.toBytesSlow(us_),
-            LibConvert.unsafeToBytes(us_)
+            // is unsafe, i.e. the `us` can no longer be used.
+            LibConvertSlow.toBytesSlow(us),
+            LibConvert.unsafeToBytes(us)
         );
     }
 
-    function testUnsafeTo16BitBytesReferenceImplementation(uint256[] memory us_) public {
+    function testUnsafeTo16BitBytesReferenceImplementation(uint256[] memory us) public pure {
         assertEq(
             // Note the order of these calls is important because the unsafe call
-            // is unsafe, i.e. the `us_` can no longer be used.
-            LibConvertSlow.to16BitBytesSlow(us_),
-            LibConvert.unsafeTo16BitBytes(us_)
+            // is unsafe, i.e. the `us` can no longer be used.
+            LibConvertSlow.to16BitBytesSlow(us),
+            LibConvert.unsafeTo16BitBytes(us)
         );
     }
 }
