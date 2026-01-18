@@ -13,17 +13,17 @@ library LibConvert {
     /// the length in situ as the integer array length is measured in 32 byte
     /// increments while the length of `bytes` is the literal number of bytes.
     ///
-    /// It is unsafe for the caller to use `us_` after it has been converted to
+    /// It is unsafe for the caller to use `us` after it has been converted to
     /// bytes because there is now two pointers to the same mutable data
     /// structure AND the length prefix for the `uint256[]` version is corrupt.
     ///
-    /// @param us_ The integer array to convert to `bytes`.
-    /// @return bytes_ The integer array converted to `bytes` data.
-    function unsafeToBytes(uint256[] memory us_) internal pure returns (bytes memory bytes_) {
+    /// @param us The integer array to convert to `bytes`.
+    /// @return bs The integer array converted to `bytes` data.
+    function unsafeToBytes(uint256[] memory us) internal pure returns (bytes memory bs) {
         assembly ("memory-safe") {
-            bytes_ := us_
+            bs := us
             // Length in bytes is 32x the length in uint256
-            mstore(bytes_, mul(0x20, mload(bytes_)))
+            mstore(bs, mul(0x20, mload(bs)))
         }
     }
 
@@ -32,28 +32,28 @@ library LibConvert {
     /// values are not checked for overflow due to the truncation. The caller
     /// MUST ensure that all values fit in `type(uint16).max` or that silent
     /// overflow is safe.
-    /// @param us_ The `uint256[]` to truncate and concatenate to 16 bit `bytes`.
+    /// @param us The `uint256[]` to truncate and concatenate to 16 bit `bytes`.
     /// @return The concatenated 2-byte chunks.
-    function unsafeTo16BitBytes(uint256[] memory us_) internal pure returns (bytes memory) {
+    function unsafeTo16BitBytes(uint256[] memory us) internal pure returns (bytes memory) {
         unchecked {
             // We will keep 2 bytes (16 bits) from each integer.
-            bytes memory bytes_ = new bytes(us_.length * 2);
+            bytes memory bs = new bytes(us.length * 2);
             assembly ("memory-safe") {
-                let replaceMask_ := 0xFFFF
-                let preserveMask_ := not(replaceMask_)
+                let replaceMask := 0xFFFF
+                let preserveMask := not(replaceMask)
                 for {
-                    let cursor_ := add(us_, 0x20)
-                    let end_ := add(cursor_, mul(mload(us_), 0x20))
-                    let bytesCursor_ := add(bytes_, 0x02)
-                } lt(cursor_, end_) {
-                    cursor_ := add(cursor_, 0x20)
-                    bytesCursor_ := add(bytesCursor_, 0x02)
+                    let cursor := add(us, 0x20)
+                    let end := add(cursor, mul(mload(us), 0x20))
+                    let bytesCursor := add(bs, 0x02)
+                } lt(cursor, end) {
+                    cursor := add(cursor, 0x20)
+                    bytesCursor := add(bytesCursor, 0x02)
                 } {
-                    let data_ := mload(bytesCursor_)
-                    mstore(bytesCursor_, or(and(preserveMask_, data_), and(replaceMask_, mload(cursor_))))
+                    let data := mload(bytesCursor)
+                    mstore(bytesCursor, or(and(preserveMask, data), and(replaceMask, mload(cursor))))
                 }
             }
-            return bytes_;
+            return bs;
         }
     }
 }

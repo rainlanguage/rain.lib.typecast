@@ -23,6 +23,9 @@ library LibCast {
         }
     }
 
+    /// Retype an array of `address[]` to `uint256[]`.
+    /// @param addresses The array of addresses to cast to integers.
+    /// @return us The array of integers cast from each address.
     function asUint256Array(address[] memory addresses) internal pure returns (uint256[] memory us) {
         assembly ("memory-safe") {
             us := addresses
@@ -38,6 +41,9 @@ library LibCast {
         }
     }
 
+    /// Retype an array of `bytes32[]` to `uint256[]`.
+    /// @param b32s The array of 32 byte words to cast to integers.
+    /// @return us The array of integers.
     function asUint256Array(bytes32[] memory b32s) internal pure returns (uint256[] memory us) {
         assembly ("memory-safe") {
             us := b32s
