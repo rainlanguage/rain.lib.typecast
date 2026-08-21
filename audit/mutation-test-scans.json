@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2026-08-21T06:50:35Z",
+    "commit": "a4692fddbb95a0018cec42969ef6c7fa1b0cf86c",
+    "testsAfterCommit": "a4692fddbb95a0018cec42969ef6c7fa1b0cf86c",
+    "publishedTag": "v0.1.0",
+    "commitsAheadOfTag": 8,
+    "scope": "whole repo",
+    "tool": "adversarial-mutation-test",
+    "skillVersion": "0.34.0",
+    "summary": {
+      "behaviours": 23,
+      "candidates": 3,
+      "confirmed": 3,
+      "testsBefore": 6,
+      "testsAfter": 6,
+      "filed": ["#20", "#21", "#22"],
+      "mutantsProbed": 38,
+      "killedBefore": 27,
+      "survivedBefore": 9,
+      "equivalentMutants": 1,
+      "openCoveragePullRequests": ["#18", "#19"],
+      "note": "testsAfterCommit equals commit because the run was explicitly instructed not to merge anything, so no coverage landed on the default branch. The run ADDED 9 tests (LibCast 4 -> 9, LibConvert 2 -> 6) and strengthened 4 existing ones in place; they sit in the two open PRs listed above. When those land, this entry should be superseded by one whose testsAfterCommit names the merged tree and whose testsAfter reads 15. killedBefore + survivedBefore total 36 rather than mutantsProbed's 38 because M37 and M38 were authored after the pre-existing-suite pass; re-probing both PRs' tests together against all 38, on a green 15-test baseline, is 37/38 killed with 0 no-run and 0 harness errors. The one surviving mutant is an equivalent mutant, not a gap: setting preserveMask to not(0) in unsafeTo16BitBytes is bit-identical to the shipped code across the whole padded allocation, because new bytes zero-initialises and each destination position is written exactly once in increasing order."
+    }
+  }
+]
