@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {Test} from "forge-std-1.16.1/src/Test.sol";
+import {Test, stdError} from "forge-std-1.16.1/src/Test.sol";
 import {LibConvert} from "../src/LibConvert.sol";
 import {LibConvertSlow} from "./LibConvertSlow.sol";
 
@@ -68,6 +68,46 @@ contract LibConvertTest is Test {
         for (uint256 i = 0; i < expected.length; i++) {
             assertEq(us[i], expected[i]);
         }
+    }
+
+    /// The NatSpec puts an obligation on the caller about the values and none
+    /// about the length, so a length prefix that cannot be doubled without
+    /// wrapping has to revert rather than pack the wrapped count of elements and
+    /// hand back a well formed result of the wrong length.
+    function testUnsafeTo16BitBytesForgedLengthOverflowReverts(uint256[] memory us, uint256 forgedLength) external {
+        forgedLength = bound(forgedLength, 2 ** 255, type(uint256).max);
+        vm.expectRevert(stdError.arithmeticError);
+        this.unsafeTo16BitBytesWithForgedLength(us, forgedLength);
+    }
+
+    /// Three real elements behind a length prefix claiming `2 ** 255 + 3`, which
+    /// used to return the six bytes of the three real elements as though the
+    /// claim had been honoured.
+    function testUnsafeTo16BitBytesForgedLengthOverflowRevertsForThreeRealElements() external {
+        uint256[] memory us = new uint256[](3);
+        us[0] = 0xAAAA;
+        us[1] = 0xBBBB;
+        us[2] = 0xCCCC;
+
+        vm.expectRevert(stdError.arithmeticError);
+        this.unsafeTo16BitBytesWithForgedLength(us, (2 ** 255) + 3);
+    }
+
+    /// Forging the length prefix has to happen behind an external call boundary.
+    /// `expectRevert` needs a call to watch, and an array claiming more elements
+    /// than it has cannot be ABI encoded to get across one, so the forgery is
+    /// done on this side of it. The assembly is deliberately not annotated
+    /// `memory-safe`: it leaves `us` inconsistent with its own allocation, which
+    /// is the whole point of the test.
+    function unsafeTo16BitBytesWithForgedLength(uint256[] memory us, uint256 forgedLength)
+        external
+        pure
+        returns (bytes memory)
+    {
+        assembly {
+            mstore(us, forgedLength)
+        }
+        return LibConvert.unsafeTo16BitBytes(us);
     }
 
     /// The packing loop writes whole words at two byte offsets, so it has to
