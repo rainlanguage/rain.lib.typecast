@@ -18,8 +18,9 @@ contract LibConvertTest is Test {
 
     function testUnsafeTo16BitBytesReferenceImplementation(uint256[] memory us) public pure {
         assertEq(
-            // Note the order of these calls is important because the unsafe call
-            // is unsafe, i.e. the `us` can no longer be used.
+            // Unlike `unsafeToBytes` this one does not consume `us`, so both
+            // calls read the same intact source and the order between them
+            // carries no requirement.
             LibConvertSlow.to16BitBytesSlow(us),
             LibConvert.unsafeTo16BitBytes(us)
         );
