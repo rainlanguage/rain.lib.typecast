@@ -6,8 +6,16 @@ pragma solidity ^0.8.25;
 /// @notice Type conversions that require additional structural changes to
 /// complete safely. These are NOT mere type casts and involve additional
 /// reads and writes to complete, such as recalculating the length of an array.
-/// The convention "toX" is adopted from Rust to imply the additional costs and
-/// consumption of the source to produce the target.
+/// The convention "toX" is adopted from Rust, where `to_` marks a conversion
+/// that costs more than a cast. It marks the cost only. It says nothing about
+/// the fate of the source, because in Rust the marker for consuming the source
+/// is `into_` rather than `to_`, and this library has no equivalent marker.
+///
+/// Whether a conversion consumes its source, and what the `unsafe` prefix
+/// refers to, are therefore per-function properties. Both are stated on the
+/// function itself and neither can be read off the name. Neither generalises
+/// from one function in this library to another, so a caller MUST read the
+/// NatSpec of the specific function it is calling.
 library LibConvert {
     /// Convert an array of integers to `bytes` data. This requires modifying
     /// the length in situ as the integer array length is measured in 32 byte
@@ -32,6 +40,13 @@ library LibConvert {
     /// values are not checked for overflow due to the truncation. The caller
     /// MUST ensure that all values fit in `type(uint16).max` or that silent
     /// overflow is safe.
+    ///
+    /// The truncation is the only unsafety. This does NOT consume `us`. The
+    /// result is a freshly allocated buffer and `us` is only read, so `us` is
+    /// still a valid `uint256[]` after the call and the caller may keep using
+    /// it. That does NOT carry over to `unsafeToBytes`, which hands back the
+    /// source buffer itself with a rewritten length prefix, and so must not be
+    /// given a `us` that the caller still needs.
     /// @param us The `uint256[]` to truncate and concatenate to 16 bit `bytes`.
     /// @return The concatenated 2-byte chunks.
     function unsafeTo16BitBytes(uint256[] memory us) internal pure returns (bytes memory) {
